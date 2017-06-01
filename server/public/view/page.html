@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="/public/css/style.css" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js" type="text/javascript"></script>
+	<script type="text/javascript" src="/public/js/table.js"></script>
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script type="text/javascript" src="/public/js/mapa.js"></script>
+	<script type="text/javascript" src="/public/js/buttons.js"></script>
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwlxIqJwJ9YCRfyRGo35KRVeAJm9WVjPU&callback=initMap"></script>
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+	<meta charset="utf-8">
+	<title>Reclame Já</title>
+
+</head>
+<body>
+	<nav>
+
+		<ul class="ui-navbar">
+
+			<li id="mapButton" class="left"><a>Mapa</a></li>
+
+			<li id="tableButton" class="rigth"><a>Lista</a></li>
+		</ul>
+	</nav>
+
+	<div  id="map"></div>
+
+	<div style="display:none" id="table">
+
+
+		<table id="tablejson"></table>
+	</div>
+
+
+</body>
+</html>

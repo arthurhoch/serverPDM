@@ -1,0 +1,42 @@
+<html>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+  $.getJSON('https://geoip-db.com/json/geoip.php?jsonp=?') 
+  .done (function(location) {
+    lat = location.latitude;
+    lng = location.longitude;
+
+    document.getElementById('lat').value = lat;
+    document.getElementById('lng').value = lng;
+
+  });
+
+  
+
+
+</script>
+
+
+  <body>
+    <form ref='uploadForm' 
+      id='uploadForm' 
+      action='http://localhost:3000/upload' 
+      method='post' 
+      encType="multipart/form-data">
+        <h4>sampleFile</h4>
+        <input type="file" name="sampleFile" />
+        <h4>problema</h4>
+        <input type="text" name="problema" />
+        <h4>descricao</h4>
+	      <input type="text" name="descricao" />
+        <h4>lat</h4>
+	      <input type="text" id="lat" name="lat" />
+        <h4>lng</h4>
+	      <input type="text" id="lng" name="lng" />
+        <h4></h4>
+        <input type='submit' value='Upload!' />
+    </form>     
+  </body>
+</html>

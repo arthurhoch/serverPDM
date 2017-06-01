@@ -1,0 +1,123 @@
+require('./config/config')
+
+const _ = require('lodash')
+const express = require('express')
+const fileUpload = require('express-fileupload')
+const serveIndex = require('serve-index')
+
+var { mongoose } = require('./db/mongoose')
+var { ObjectID } = require('mongodb')
+
+var { Reclamacao } = require('./models/reclamacao')
+const publicFolder = 'public'
+const imagensFolder = 'imagens'
+const publicPatch = __dirname + `/${publicFolder}`
+
+var app = express()
+
+app.use(fileUpload())
+
+app.use(express.static(__dirname + "/"))
+app.use(`/${publicFolder}`, serveIndex(__dirname + `/${publicFolder}`))
+
+app.get('/', function(req, res) {
+	res.sendFile(publicPatch + "/view/page.html" )
+})
+
+app.get('/reclamacoes/', (req, res) => {
+
+	var filter = {
+		_id: false,
+		lat: false,
+		lng: false,
+		__v: false
+	}
+
+	Reclamacao.find({}, filter).then((reclamacoes) => {
+		res.send({reclamacoes})
+	}), (e) => {
+		res.status(400).send(e)
+	}
+})
+
+app.get('/markers/', (req, res) => {
+
+	var filter = {
+		lat: true,
+		lng: true,
+		problema: true,
+		imgpath: true,
+		_id: false
+	}
+
+	Reclamacao.find({}, filter).then((result) => {
+		res.send({result})
+	}).catch((e) => {
+		res.status(400).send(e)
+	})
+})
+
+app.get('/reclamacoes/:id', (req, res) => {
+	var id = req.params.id
+
+	if (!ObjectID.isValid(id)) {
+		return res.status(400).send(e)
+	}
+
+	Reclamacao.findById(id).then((reclamacao) => {
+		if (!reclamacao) {
+			return res.status(404).send()
+		}	
+
+		res.send({reclamacao})
+	}), (e) => {
+		res.status(400).send(e)
+	}
+})
+
+app.delete('/limpar/bd', (req, res) => {
+	Reclamacao.remove({}).then((result) => {
+		res.send(result)
+	}).catch((e) => {
+		res.status(400).send(e)
+	})
+})
+
+app.post('/upload/', (req, res) => {
+
+	if (!req.files.sampleFile)
+		return res.status(400).send('No files were uploaded.')
+
+	var body = _.pick(req.body, ['problema', 'descricao', 'lat', 'lng'])
+
+	var object = {
+		problema: body.problema,
+		descricao: body.descricao,
+		lat: body.lat,
+		lng: body.lng
+	}
+
+	let sampleFile = req.files.sampleFile
+
+	var reclamacao = new Reclamacao(object)
+	reclamacao.imgpath = `/${publicFolder}/${imagensFolder}/${sampleFile.name}`
+
+
+	var filepath = `${publicPatch}/${imagensFolder}/${sampleFile.name}`
+	sampleFile.mv(filepath, (err) => {
+		if (err)
+			return res.status(500).send(err)
+
+		reclamacao.save((result) => {
+			res.send({result: 'OK'})
+		}).catch((e) => {
+			res.status(400).send(e)
+		})
+
+
+	})
+})
+
+app.listen(process.env.PORT, () => {
+	console.log(`Started on port ${process.env.PORT}`)
+})
