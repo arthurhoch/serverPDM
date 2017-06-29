@@ -31,21 +31,7 @@ app.get('/reclamacoes/', (req, res) => {
 		lat: false,
 		lng: false,
 		__v: false,
-	}
-
-	Reclamacao.find({}, filter).then((reclamacoes) => {
-		return res.send({reclamacoes})
-	}), (e) => {
-		return res.status(400).send(e)
-	}
-})
-
-app.get('/reclamacoes/android', (req, res) => {
-
-	var filter = {
-		lat: false,
-		lng: false,
-		__v: false,
+		resolvido: false
 	}
 
 	Reclamacao.find({}, filter).then((reclamacoes) => {
@@ -84,7 +70,7 @@ app.get('/reclamacoes/:id', (req, res) => {
 			return res.status(404).send()
 		}	
 
-		return res.send({reclamacao})
+		res.send({reclamacao})
 	}), (e) => {
 		return res.status(400).send(e)
 	}
@@ -141,25 +127,6 @@ app.post('/upload/', (req, res) => {
 
 	})
 })
-
-app.get('/resolvido/:id', (req, res) => {
-	var id = req.params.id
-
-	if (!ObjectID.isValid(id)) {
-		return res.status(400).send(e)
-	}
-
-	Reclamacao.findByIdAndUpdate(id, {$set: {resolvido: true}}).then((result) => {
-		if (!result) {
-			return res.status(404).send()
-		}
-
-		return res.send({result})
-	}).catch((e) => {
-		return res.status(400).send()
-	})
-})
-
 
 app.listen(process.env.PORT, () => {
 	console.log(`Started on port ${process.env.PORT}`)

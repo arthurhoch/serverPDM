@@ -3,13 +3,11 @@ var mongoose = require('mongoose')
 var ReclamacaoSchena = new mongoose.Schema({
 	problema: {
 		type: String,
-		required: true,
-		minlength: 5
+		required: true
 	},
 	descricao: {
 		type: String,
-		required: true,
-		minlength: 5
+		required: true
 	},
 	lat: {
 		type: Number,
@@ -22,6 +20,10 @@ var ReclamacaoSchena = new mongoose.Schema({
 	imgpath: {
 		type: String,
 		required: true
+	},
+	resolvido: {
+		type: Boolean,
+		default: false
 	}
 })
 
